@@ -1,0 +1,27 @@
+extends layout 
+
+block content
+    h1 article
+    h2 #{title}
+
+    form(action="/articles/saveForm", method="get")
+        .row 
+            .input-field.col.s6  
+                input#first_name.validate(type="text",name="firstName")
+                label(for="first_name") First Name 
+                br
+            .input-field.col.s6 
+                input#first_name.validate(type="text",name="lastName")
+                label(for="last_name") Last Name 
+                br
+        .row
+            .input-field.col.s6
+                input#email.validate(type="text",name="email")
+                label(for="email") Email
+                br
+            .input-field.col.s6
+                input#phone.validate(type="text",name="phone")
+                label(for="phone") Phone Number
+                br
+        .row 
+            button.btn(type="submit") Submit   
