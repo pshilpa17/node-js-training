@@ -1,9 +1,9 @@
-const article = require('../datastore/articles.json')
+const articles = require('../datastore/articles.json')
 
 let Articles={}
 
 Articles.getAll = () =>{
-    return article
+    return articles
 }
 
 module.exports = Articles
