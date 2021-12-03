@@ -1,0 +1,25 @@
+    "express": "^4.17.1",
+    "joi": "^17.4.3",
+    "mysql2": "^2.3.3",
+    "pug": "^3.0.2",
+    "save": "^2.4.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+
+
+
+npm install -g npm
+npm init
+npm install express --save
+npm install -g nodemon 
+npm install pug
+npm install --save mysql2
+npm install uuid
+npm install joi
+npm install bcrypt
+npm install express-session
+
+systems.io when its req
+

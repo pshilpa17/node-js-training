@@ -1,5 +1,6 @@
 const express = require('express');
 const UserModel = require('../models/user')
+const bcrypt = require('bcrypt');
 const router = express.Router()
 
 const loginValidation= require('../schema/validation')
@@ -10,7 +11,7 @@ router.get('/signup', (req,res)=>{
 });
 router.post('/saveForm', async(req,res)=>{
     //get request
-    console.log(req.body)
+    //console.log(req.body)
     const valid=signUpValidation(req.body)
     if(valid.error){
         res.render('signup',{message:valid.error.details[0].message})
@@ -20,47 +21,48 @@ router.post('/saveForm', async(req,res)=>{
     //insert data
     //if success return 
     //else return error
-    //  try{
-    //     const results = await UserModel.saveNewUser(req.body);
-    //     res.render('signup',{title:'New USer Signup Page',message: 'Success'})
-    //  }    catch(error){
-    //      console.log(error)
-    //      res.render('signup',{title:'New USer Signup Page',message:'Failed'})
-        
-    //  }
+      try{
+         const results = await UserModel.saveNewUser(req.body);
+         res.render('signup',{title:'New USer Signup Page',message: 'Success'})
+      }    catch(error){
+          //console.log(error)
+          res.render('signup',{title:'New USer Signup Page',message:'Failed'})  
+      }
 })
+
  router.get('/login', (req,res)=>{
+    //console.log(req.session)
         res.render('login',{title: 'Login screen'})
  })
+
 router.post('/login', async(req,res)=>{
-    console.log(req.body);
+    //console.log(req.body);
     const valid = loginValidation(req.body)
-    console.log(valid)
     if(valid.error){
+        console.log(valid.error.details[0].message)
         res.render('login',{message:valid.error.details[0].message})
     }
-    try{
+    else{
+        try{
     const result=await UserModel.getUserByEmaiID(req.body)
-    console.log(result)
-    //validations of email and password
-    //email and pass are not empty
-    // let error = '';
-    // if(req.body.email.length == 0){
-    //     error+= 'Email is required'}
-    // else if(req.body.password.length == 0){
-    //      error +='Password cannot be empty'}
-    //     }
-    //     if(error.length>0){
-    //         res.render('login',{message:'error'}
-    //     }
-         if(result[0].password===req.body.password){
-            res.render('add_article')}
-         else{
-             res.render('login',{message:'Invalid Password'})
+    if (result.length){
+        const isvalidPassword = await bcrypt.compare(req.body.password, result[0].password)
+            if(isvalidPassword) {
+                    req.session.userID=result[0].id;
+                    console.log(req.session);
+                    res.redirect('/articles')
+                    
+                //res.render('add_article',{message:`New User Account Created for ${req.body.email}`})
+            }else{
+                res.render('login',{message:'Invalid Password'})
+    }}else{
+            res.render('login',{message:`user with email ${req.body.email} not found`})
         }}
      catch(error){
-         console.log(error)
-         res.render('login',{message:'login failed'})
-               }   
-            })
+         res.render('login',{message:'Failed creating new user'+error})
+                 
+         }}
+
+        })
+        
 module.exports = router;
